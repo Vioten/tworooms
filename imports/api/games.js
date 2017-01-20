@@ -16,6 +16,7 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   'games.insert'(gameCode, player) {
+    this.setUserId(player)
     check(gameCode, String);
     check(player, String);
     Games.insert({
@@ -25,9 +26,9 @@ Meteor.methods({
     });
   },
   'games.addPlayer'(gameCode, player) {
+    this.setUserId(player)
     check(gameCode, String);
     check(player, String);
-    console.log(gameCode,'find');
     const res=(Games.findOne({gameCode:gameCode}));
 
     Games.update(res._id, { $push: { player: player } });

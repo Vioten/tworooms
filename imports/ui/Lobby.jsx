@@ -5,6 +5,7 @@ import Dialog from 'material-ui/Dialog';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Games } from '../api/games.js';
+import { Meteor } from 'meteor/meteor';
 
 const containerStyle = {
   margin: '0 auto',
@@ -49,30 +50,32 @@ class Lobby extends React.Component {
     });
 
     if (currentGame[0]) {
-      return currentGame[0].player.map((player) =>
-          <div key={player._id}>{player}</div>
-        );
-      }
-      return null;
-    }
+      return currentGame[0].player.map((player, i)=>
+      <div key={i} >{player}</div>
+    );
+  }
+  return null;
+}
 
-    render () {
-      return (
-        <div style={containerStyle}>
-          <div style={{margin: 'auto'}}>
-            <Card style={CardStyle}>
-              <CardHeader
-                title={this.props.params.gameCode}
-              />
-            </Card>
-            {this.renderPlayers.bind(this)()}
-          </div>
-        </div>)
-      }
-    }
+render () {
+  console.log(Meteor.userId);
+  console.log(Meteor.connection._lastSessionId);
+  return (
+    <div style={containerStyle}>
+      <div style={{margin: 'auto'}}>
+        <Card style={CardStyle}>
+          <CardHeader
+            title={this.props.params.gameCode}
+          />
+        </Card>
+        {this.renderPlayers.bind(this)()}
+      </div>
+    </div>)
+  }
+}
 
-    export default createContainer(() => {
-      return {
-        games: Games.find({}, { sort: { createdAt: -1 } }).fetch(),
-      };
-    }, Lobby);
+export default createContainer(() => {
+  return {
+    games: Games.find({}, { sort: { createdAt: -1 } }).fetch(),
+  };
+}, Lobby);
