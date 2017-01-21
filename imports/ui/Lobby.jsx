@@ -12,48 +12,47 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Games } from '../api/games.js';
 
 const containerStyle = {
- margin: '0 auto',
- width: '100%',
- // padding: 20,
- display: 'flex'
+  margin: '0 auto',
+  width: '100%',
+  // padding: 20,
+  display: 'flex'
 }
 
 const CardStyle={
- padding: 40,
- fontSize: 20,
- margin: 'auto',
- textAlign: 'center',
+  padding: 40,
+  fontSize: 20,
+  margin: 'auto',
+  textAlign: 'center',
 
 }
 
 const style = {
- margin:15,
+  margin:15,
 };
 
 
 class Lobby extends React.Component {
 
- 
 
- renderPlayers() {
-   let games = this.props.games;
 
-   const currentGame = games.filter(game =>{
-     console.log(this.props.games);
-     return (this.props.params.gameCode===game.gameCode);
-   });
+  renderPlayers() {
+    let games = this.props.games;
 
-   if (currentGame[0]) {
-     return currentGame[0].player.map((player, i) =>
-     <div key={i}>
-       <ListItem
-         primaryText={player}
-         rightAvatar={<Avatar src="https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_face_black_24px.svg" />}
-       />
-     </div>
-   );
- }
- return null;
+    const currentGame = games.filter(game =>{
+      return (this.props.params.gameCode===game.gameCode);
+    });
+    console.log(currentGame);
+    if (currentGame[0]) {
+      return currentGame[0].player.map((player, i) =>
+      <div key={i}>
+        <ListItem
+          primaryText={player}
+          rightAvatar={<Avatar src="https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_face_black_24px.svg" />}
+        />
+      </div>
+    );
+  }
+  return null;
 }
 
 render () {
@@ -87,8 +86,8 @@ render () {
 }
 }
 
-   export default createContainer(() => {
-     return {
-       games: Games.find({}, { sort: { createdAt: -1 } }).fetch(),
-     };
-   }, Lobby);
+export default createContainer(() => {
+  return {
+    games: Games.find({}, { sort: { createdAt: -1 } }).fetch(),
+  };
+}, Lobby);

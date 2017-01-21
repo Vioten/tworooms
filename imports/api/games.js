@@ -1,6 +1,8 @@
+
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
+import {browserHistory } from 'react-router';
 
 
 export const Games = new Meteor.Collection('games');
@@ -16,20 +18,29 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'games.insert'(gameCode, player) {
-    check(gameCode, String);
+  'games.insert'(player,connectionId) {
+    const gameCode = String(Math.floor(Math.random()*100000));
+    let playerId = [player, connectionId]
+    playerId=String(playerId);
+    check(connectionId, String);
+    check(playerId, String);
     check(player, String);
+    console.log(playerId);
+    browserHistory.push(`game/${gameCode}`)
     Games.insert({
-      gameCode,
-      player:[player],
+      gameCode:gameCode,
+      player:[playerId],
       createdAt: new Date(),
     });
   },
-  'games.addPlayer'(gameCode, player) {
+  'games.addPlayer'(gameCode, player, connectionId) {
     check(gameCode, String);
     check(player, String);
     const res=(Games.findOne({gameCode:gameCode}));
-
-    Games.update(res._id, { $push: { player: player } });
+    if (res) {
+      Games.update(res._id, { $push: { player: [player,connectionId] } });
+    } else {
+      return null;
+    }
   }
 });

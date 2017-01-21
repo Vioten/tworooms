@@ -57,13 +57,14 @@ class Root extends Component {
   }
 
   createNewGame() {
-
-    const gameCode = String(Math.floor(Math.random()*100000));
-    Meteor.call('games.insert', gameCode, this.state.playerName);
-    browserHistory.push(`game/${gameCode}`)
+    Meteor.call('games.insert',  this.state.playerName,String(Meteor.connection._lastSessionId));
   }
   joinGame(){
-    Meteor.call('games.addPlayer', this.state.code, this.state.playerName);
+    try {
+     Meteor.call('games.addPlayer', this.state.code, this.state.playerName,Meteor.connection._lastSessionId);
+    } catch (e) {
+      console.log(e);
+    }
     browserHistory.push(`game/${this.state.code}`)
   }
 
@@ -127,51 +128,44 @@ class Root extends Component {
               open={this.state.newGame}
               >
 
-              <TextField
-                name= "player"
-                hintText="Player"
-                floatingLabelText="Insert your name here"
-                floatingLabelFixed={true}
-                onChange={(event, playerName) => this.setState({playerName})}
-              />
-            </Dialog>
+                <TextField
+                  name= "player"
+                  hintText="Player"
+                  floatingLabelText="Insert your name here"
+                  floatingLabelFixed={true}
+                  onChange={(event, playerName) => this.setState({playerName})}
+                />
+              </Dialog>
 
-            <Dialog
-              style={LoginStyle}
-              title="Insert your Username and Game Code"
-              actions={actionsJoin}
-              modal={true}
-              open={this.state.open}
-              >
-              <TextField
-                name= "code"
-                hintText="Code"
-                floatingLabelText="Insert your code here"
-                floatingLabelFixed={true}
-                onChange={(event, code) => this.setState({code})}
-              />
-              <TextField
-                name= "player"
-                hintText="Player"
-                floatingLabelText="Insert your name here"
-                floatingLabelFixed={true}
-                onChange={(event, playerName) => this.setState({playerName})}
-              />
-              <br />
-            </Dialog>
+              <Dialog
+                style={LoginStyle}
+                title="Insert your Username and Game Code"
+                actions={actionsJoin}
+                modal={true}
+                open={this.state.open}
+                >
+                  <TextField
+                    name= "code"
+                    hintText="Code"
+                    floatingLabelText="Insert your code here"
+                    floatingLabelFixed={true}
+                    onChange={(event, code) => this.setState({code})}
+                  />
+                  <TextField
+                    name= "player"
+                    hintText="Player"
+                    floatingLabelText="Insert your name here"
+                    floatingLabelFixed={true}
+                    onChange={(event, playerName) => this.setState({playerName})}
+                  />
+                  <br />
+                </Dialog>
 
-          </Card>
-        </div>
-      </div>
-    );
-  }
-}
+              </Card>
+            </div>
+          </div>
+        );
+      }
+    }
 
-export default createContainer(() => {
-  Meteor.subscribe('games');
-
-  return {
-    games: Games.find({}, { sort: { createdAt: -1 } }).fetch(),
-    // incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
-  };
-}, Root);
+    export default Root;
