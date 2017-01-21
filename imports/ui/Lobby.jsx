@@ -33,17 +33,7 @@ const style = {
 
 class Lobby extends React.Component {
 
- // constructor(){
- //   super();
- //   this.state={
- //     code: {this.props.params.gameCode},
- //     players: []
- //   };
- // }
- //
- // addPlayer() {
- //   this.
- // }
+ 
 
  renderPlayers() {
    let games = this.props.games;
